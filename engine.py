@@ -110,8 +110,8 @@ while True:
         elif current_piece.x + current_piece.width > board.width:
             revert = True
         else:
-            for y in range(current_piece.width):
-                for x in range(current_piece.depth):
+            for y in range(current_piece.depth):
+                for x in range(current_piece.width):
                     if board.data[current_piece.y + y][current_piece.x + x] == 1:
                         revert = True
         
