@@ -32,7 +32,7 @@ class Piece:
     def r_rotate(self):
         self.new = np.array(self.data)
         self.new = self.new.T #transpose
-        self.new = np.flipud(self.new) #reflect vertically
+        self.new = np.fliplr(self.new) #reflect vertically
         self.data = self.new.tolist()
         if len(self.data) > 3:
             self.y -= 1
