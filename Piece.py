@@ -15,10 +15,30 @@ class Piece:
         print(f'width: {self.width}')
         print(f'depth: {self.depth}')
 
-    def rotate(self):
+    def l_rotate(self):
         self.new = np.array(self.data)
         self.new = self.new.T #transpose
         self.new = np.flipud(self.new) #reflect vertically
         self.data = self.new.tolist()
+        if len(self.data) > 3:
+            self.y -= 1
+            self.x += 1
+        if len(self.data[0]) > 3:
+            self.y += 1
+            self.x -= 1 #for smoother turning
+        self.width = len(self.data[0])
+        self.depth = len(self.data)
+
+    def r_rotate(self):
+        self.new = np.array(self.data)
+        self.new = self.new.T #transpose
+        self.new = np.flipud(self.new) #reflect vertically
+        self.data = self.new.tolist()
+        if len(self.data) > 3:
+            self.y -= 1
+            self.x += 1
+        if len(self.data[0]) > 3:
+            self.y += 1
+            self.x -= 1 #for smoother turning
         self.width = len(self.data[0])
         self.depth = len(self.data)
