@@ -46,12 +46,6 @@ tetronimoes = [
 
 current_piece = Piece(3,0,tetronimoes[5])
 current_piece.display()
-#time.sleep(1)
-
-for i in range(0):
-    print("\033[2J\033[H",end="")
-    print(i)
-    time.sleep(0.1)
 
 
 board = Board(10,20)
