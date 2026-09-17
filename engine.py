@@ -4,6 +4,7 @@ from Board import Board
 from Piece import Piece
 import sys, termios, tty, select
 
+wait_time = 0.5
 
 #copied in some code for button presses:
 def get_key():
@@ -69,21 +70,45 @@ def stamp():
 
 #stamp()
 
+t = time.time()
+speed_up = 1.0
 while True:
     #get key press:
     #tty.setcbreak(fd)
     key = get_key()
     if key == "left":
-        pass
+        if current_piece.x > 0:
+            can_move = True
+            for y in range(current_piece.depth):
+                for x in range(current_piece.width):
+                    if current_piece.data[y][x] == 1:
+                        if board.data[current_piece.y+y][current_piece.x+x-1] == 1:
+                            can_move = False
+            if can_move:
+                current_piece.x -= 1
     elif key == "right":
-        pass
+        if current_piece.x + current_piece.width < board.width:
+            can_move = True
+            for y in range(current_piece.depth):
+                for x in range(current_piece.width):
+                    if current_piece.data[y][x] == 1:
+                        if board.data[current_piece.y+y][current_piece.x+x+1] == 1:
+                            can_move = False
+            if can_move:
+                current_piece.x += 1
     elif key == "down":
-        pass
+        speed_up = 12.0
+    elif key == "up":
+        current_piece.l_rotate()
+        #current_piece.r_rotate()
     elif key == "q":
         break
+    elif key != "down":
+        speed_up = 1.0
 
     print("\033[2J\033[H",end="")
     print(key)
+    print(speed_up)
     #check if piece is on ground or on a "1"
     #ground check
     if current_piece.y + current_piece.depth == board.depth:
@@ -123,9 +148,10 @@ while True:
     for i in range(len(output)):
         print(*output[i])
 
-    #update piece position
-    current_piece.y += 1
-    current_piece.r_rotate()
+    if time.time() - t > wait_time/speed_up:
+        t = time.time()
+        #update piece position
+        current_piece.y += 1
     
     time.sleep(0.02)
 
