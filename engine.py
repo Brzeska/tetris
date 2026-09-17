@@ -100,7 +100,22 @@ while True:
         speed_up = 12.0
     elif key == "up":
         current_piece.l_rotate()
-        #current_piece.r_rotate()
+        revert = False
+        
+        if current_piece.x < 0:
+            revert = True
+        elif current_piece.y+current_piece.depth > board.depth:
+            revert = True
+        elif current_piece.x + current_piece.width > board.width:
+            revert = True
+        else:
+            for y in range(current_piece.width):
+                for x in range(current_piece.depth):
+                    if board.data[current_piece.y + y][current_piece.x + x] == 1:
+                        revert = True
+        
+        if revert:
+            current_piece.r_rotate()
     elif key == "q":
         break
     elif key != "down":
@@ -109,29 +124,7 @@ while True:
     print("\033[2J\033[H",end="")
     print(key)
     print(speed_up)
-    #check if piece is on ground or on a "1"
-    #ground check
-    if current_piece.y + current_piece.depth == board.depth:
-        print('TRUE')
-        stamp()
-        current_piece = Piece(3,0,tetronimoes[np.random.default_rng().integers(0, 7)])
-    #sitting on piece check:
-    else:
-        has_landed = False
-        for y in range(current_piece.depth):
-            for x in range(current_piece.width):
-                #try:
-                    if current_piece.data[y][x] == 1:
-                        if board.data[current_piece.y + y + 1][current_piece.x + x] == 1:
-                            stamp()
-                            current_piece = Piece(4,0,tetronimoes[np.random.default_rng().integers(0, 7)])
-                            has_landed = True
-                            break
-            if has_landed:
-                break
-                #except:
-                    #print(f'error! {y},{x}')
-                    #time.sleep(3)
+
     #print the current game state
     output = [[-1] * board.width for _ in range(board.depth)]
     for y in range(board.depth):
@@ -150,6 +143,26 @@ while True:
 
     if time.time() - t > wait_time/speed_up:
         t = time.time()
+        #ground check
+        if current_piece.y + current_piece.depth == board.depth:
+            #print('TRUE')
+            stamp()
+            current_piece = Piece(3,0,tetronimoes[np.random.default_rng().integers(0, 7)])
+        #sitting on piece check:
+        else:
+            has_landed = False
+            for y in range(current_piece.depth):
+                for x in range(current_piece.width):
+                    #try:
+                        if current_piece.data[y][x] == 1:
+                            if board.data[current_piece.y + y + 1][current_piece.x + x] == 1:
+                                stamp()
+                                current_piece = Piece(4,0,tetronimoes[np.random.default_rng().integers(0, 7)])
+                                has_landed = True
+                                break
+                if has_landed:
+                    break
+
         #update piece position
         current_piece.y += 1
     
