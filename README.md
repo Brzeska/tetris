@@ -1,3 +1,6 @@
-Tetris clone from scratch :D
+Simplified tetris clone from scratch :D
 
-Just to practice python. Should hopefully only take a few hours.
+Runs in mac terminal
+
+Currently wall kicking is not supported and there is no 
+"game over" condition
