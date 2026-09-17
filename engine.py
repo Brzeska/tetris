@@ -72,6 +72,7 @@ def stamp():
 
 t = time.time()
 speed_up = 1.0
+score = 0
 while True:
     #get key press:
     #tty.setcbreak(fd)
@@ -122,7 +123,7 @@ while True:
         speed_up = 1.0
 
     print("\033[2J\033[H",end="")
-    print(key)
+    print(f'score: {score}')
     print(speed_up)
 
     #print the current game state
@@ -152,7 +153,7 @@ while True:
     for i in range(len(output)):
         print(*output[i])
 
-    if time.time() - t > wait_time/speed_up:
+    if time.time() - t > wait_time/(speed_up+score*.1):
         t = time.time()
         #ground check
         if current_piece.y + current_piece.depth == board.depth:
@@ -183,6 +184,7 @@ while True:
                     is_ones = False
             if is_ones:
                 board.fall(d)
+                score += 1
     time.sleep(0.02)
 
 termios.tcsetattr(fd, termios.TCSADRAIN, saved)
