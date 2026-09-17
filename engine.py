@@ -2,6 +2,50 @@ import time
 import numpy as np
 from Board import Board
 from Piece import Piece
+import sys, termios, tty, select
+
+
+#copied in some code for button presses:
+def get_key():
+    if select.select([sys.stdin], [], [], 0)[0]:
+        ch = sys.stdin.read(1)
+        if ch == "\x1b":
+            seq = sys.stdin.read(2)
+            if seq == "[A": return "up"
+            if seq == "[B": return "down"
+            if seq == "[C": return "right"
+            if seq == "[D": return "left"
+        return ch
+    return None
+
+fd = sys.stdin.fileno()
+saved = termios.tcgetattr(fd)
+tty.setcbreak(fd)
+
+tetronimoes = [
+[[1,1],
+ [1,1]],
+[[0,1,1],
+ [1,1,0]],
+[[1,1,0],
+ [0,1,1]],
+[[1,0],
+ [1,0],
+ [1,1]],
+[[0,1],
+ [0,1],
+ [1,1]],
+[[1],
+ [1],
+ [1],
+ [1]],
+[[1,1,1],
+ [0,1,0]]
+        ]
+
+current_piece = Piece(3,0,tetronimoes[5])
+current_piece.display()
+#time.sleep(1)
 
 for i in range(0):
     print("\033[2J\033[H",end="")
@@ -10,9 +54,8 @@ for i in range(0):
 
 
 board = Board(10,20)
-current_piece = Piece(3,0,[
-    [1,1,0],
-    [0,1,1]])
+current_piece = Piece(3,0,tetronimoes[5])
+
 
 def stamp():
     '''
@@ -21,22 +64,49 @@ def stamp():
     '''
     for y in range(current_piece.depth):
         for x in range(current_piece.width):
-            board.data[current_piece.y+y][current_piece.x+x] = current_piece.data[y][x]
+            if current_piece.data[y][x] == 1:
+                board.data[current_piece.y+y][current_piece.x+x] = 1
 
 #stamp()
 
 while True:
+    #get key press:
+    #tty.setcbreak(fd)
+    key = get_key()
+    if key == "left":
+        pass
+    elif key == "right":
+        pass
+    elif key == "down":
+        pass
+    elif key == "q":
+        break
 
     print("\033[2J\033[H",end="")
-    
+    print(key)
     #check if piece is on ground or on a "1"
-    
     #ground check
     if current_piece.y + current_piece.depth == board.depth:
         print('TRUE')
         stamp()
-    else: print('FALSE')
-
+        current_piece = Piece(3,0,tetronimoes[np.random.default_rng().integers(0, 7)])
+    #sitting on piece check:
+    else:
+        has_landed = False
+        for y in range(current_piece.depth):
+            for x in range(current_piece.width):
+                #try:
+                    if current_piece.data[y][x] == 1:
+                        if board.data[current_piece.y + y + 1][current_piece.x + x] == 1:
+                            stamp()
+                            current_piece = Piece(4,0,tetronimoes[np.random.default_rng().integers(0, 7)])
+                            has_landed = True
+                            break
+            if has_landed:
+                break
+                #except:
+                    #print(f'error! {y},{x}')
+                    #time.sleep(3)
     #print the current game state
     output = [[-1] * board.width for _ in range(board.depth)]
     for y in range(board.depth):
@@ -55,11 +125,11 @@ while True:
 
     #update piece position
     current_piece.y += 1
-    #current_piece.rotate()
+    current_piece.r_rotate()
     
-    time.sleep(0.5)
+    time.sleep(0.02)
 
-
+termios.tcsetattr(fd, termios.TCSADRAIN, saved)
 #piece.x = leftmost position of piece
 #piece.x + piece.width = leftmost position of piece boundary
 #piece.y = topmost position of piece
