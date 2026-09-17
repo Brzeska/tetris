@@ -135,9 +135,20 @@ while True:
                 y >= current_piece.y and
                 y < current_piece.y + current_piece.depth):
                 output[y][x] = current_piece.data[y-current_piece.y][x-current_piece.x]
+                
+                if output[y][x] == 1:
+                    output[y][x] = '█'
+                elif output[y][x] == 0:
+                    output[y][x] = ' '
+                
             #print board data
             else:
                 output[y][x] = board.data[y][x]
+                if output[y][x] == 1:
+                    output[y][x] = '█'
+                elif output[y][x] == 0:
+                    output[y][x] = ' '
+    output.append(['░']*board.width)
     for i in range(len(output)):
         print(*output[i])
 
@@ -165,7 +176,13 @@ while True:
 
         #update piece position
         current_piece.y += 1
-    
+        for d in range(board.depth):
+            is_ones = True
+            for i in range(board.width):
+                if board.data[d][i] == 0:
+                    is_ones = False
+            if is_ones:
+                board.fall(d)
     time.sleep(0.02)
 
 termios.tcsetattr(fd, termios.TCSADRAIN, saved)
