@@ -118,7 +118,7 @@ while True:
 
     print("\033[2J\033[H",end="")
     print(f'score: {score}')
-    print(speed_up)
+    print(f'speed: {(speed_up+score*.1)/wait_time}')
 
     #print the current game state
     output = [[-1] * board.width for _ in range(board.depth)]
