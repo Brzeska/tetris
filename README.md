@@ -3,6 +3,7 @@ Simplified tetris clone programmed from scratch in one afternoon:D
 
 Runs in any unix terminal
 
+REQUIRES NUMPY: for osx, `pip install numpy`, for linux `apt install python3-numpy`
 
 Arrow keys to run: 
 
